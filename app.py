@@ -4,6 +4,9 @@ import dash_html_components as html
 import pandas as pd
 import finnhub
 import configparser
+
+from dash.dependencies import Input, Output
+
 import json
 
 #data = pd.read_csv("avocado.csv")
@@ -20,11 +23,8 @@ with open('./config/symbols.json') as f:
   symbols = json.load(f)
 
 # Setup Client
-#finnhub_client = finnhub.Client(api_key=config["finnhub.io"]["api_key"])
+finnhub_client = finnhub.Client(api_key=config["finnhub.io"]["api_key"])
 #finnhub_client = finnhub.Client(api_key=config["finnhub.io"]["sandbox_api_key"])
-
-# Company news
-#print(finnhub_client.company_news('GOOGL', _from="2021-04-01", to="2021-04-02"))
 
 # News Sentiment
 #print(finnhub_client.news_sentiment('AAPL'))
@@ -38,21 +38,37 @@ app.layout = html.Div(
     children=[
         html.H1(children="Smart Trader",),
         dcc.Dropdown(
-        id='symbols-dropdown',
-        options=symbols,
-        value=symbols[0]["value"]
-    ),
-        html.Iframe(id="recommandation",
+            id='symbols-dropdown',
+            options=symbols,
+            value=symbols[0]["value"],
+            persistence=True,
+            persistence_type='session'
+        ),
+        html.Br(),
+        dcc.Tabs(id='tabs', value='recommendation-tab', children=[
+            dcc.Tab(label='Recommendation Trends', value='recommendation-tab', children=[
+                html.Iframe(id="recommandation",
                     src="https://widget.finnhub.io/widgets/recommendation?symbol=AAPL",
-                    style={"height": "500px", "width": "80%"}),
+                    style={"height": "500px", "width": "80%"})
+            ]),
+            dcc.Tab(label='Company News', value='company-news-tab', children=[
+                html.Div(id='company-news-div'),
+            ]),
+        ]),
+        html.Div(id='tabs-content'),
     ]
 )
 
+# import company news script logic
+import company_news
+
+# Symbols Dropdown event 
 @app.callback(
-    dash.dependencies.Output('recommandation', 'src'),
-    [dash.dependencies.Input('symbols-dropdown', 'value')])
+    Output('recommandation', 'src'),
+    [Input('symbols-dropdown', 'value')])
 def update_recommendation(value):
     return 'https://widget.finnhub.io/widgets/recommendation?symbol={}'.format(value)
+
 
 if __name__ == "__main__":
     app.run_server(debug=True, port=8000)
