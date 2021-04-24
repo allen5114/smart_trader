@@ -20,7 +20,7 @@ def get_company_news_row(news):
         children=[
             html.Div(
                 children=[
-                    html.A([html.H2(children=news["headline"],),], href=news["url"]),
+                    html.A([html.H2(children=news["headline"],),], href=news["url"], target='_blank'),
                     html.P(children=news["source"]+ " " + timestampStr,),
                     html.Span(children=news["summary"],),
                 ]
@@ -30,7 +30,7 @@ def get_company_news_row(news):
                     html.A([
                         html.Img(src=news["image"]
                         , style={'height': '150px'}),
-                    ], href=news["url"]),
+                    ], href=news["url"], target='_blank'),
                 ]
             ,style={'display': 'inline-block', 'width': '30%', 'verticalAlign': 'top'}),
         ], style={'margin': '10px', 'padding': '10px'},        

@@ -80,4 +80,4 @@ def update_recommendation_trends(value):
         name='StrongSell',
         marker=go.bar.Marker(color='rgb(141, 14, 14)')
     )
-    return [dcc.Graph(figure=go.Figure(data=[strongSellTrace, sellTrace, holdTrace, buyTrace, strongBuyTrace], layout=go.Layout(title=graphTitle, plot_bgcolor='black', barmode='stack')))]
+    return [dcc.Graph(figure=go.Figure(data=[strongSellTrace, sellTrace, holdTrace, buyTrace, strongBuyTrace], layout=go.Layout(title=graphTitle, plot_bgcolor='lightgray', barmode='stack')))]
